@@ -16,7 +16,7 @@ export default function AIChatWidget(props: Props) {
   return (
     <>
       <button
-        className="rounded-xl bg-[#f15519] p-4 fixed bottom-4 right-4 cursor-pointer hover:scale-110 transition"
+        className="rounded-xl bg-accent p-4 fixed bottom-4 right-4 cursor-pointer hover:scale-110 transition"
         onClick={handleClick}
         aria-label="Toggle AI chat"
         aria-toggle="true"
