@@ -1,73 +1,36 @@
-# React + TypeScript + Vite
+# Running locally
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+1. `npm i` to install dependencies
+2. `npm run dev` to launch the demo
 
-Currently, two official plugins are available:
+# Decisions
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Mute/unmute microphone feature, I chose this because I think privacy is important and this feature gives users more control over their privacy, this is the same reason I have a text based experience as a backup in case the user does not want to send their voice to ElevenLabs.
+- Transcript view, there is a live-ish transcript view that shows both what you said and what the agent said. It is live-ish as I am not using text streams which would give a proper live experience.
+- not using text streams, I chose not to use text streams because it was easier to implement quickly with the ElevenLabs SDK
+- Accessibility improvements, I focused on having good contrast and well labeled inputs/states that anyone can understand. I chose to improve accessibility because I think accessibility is very important for the web.
 
-## React Compiler
+# What I would do with more time
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Improve accessibility even more
+- i18n would be a nice feature seeing as aheeva operates in so many countries
+- text streams to have a better user experience.
+- add a way to switch between the voice and text modes.
+- implement a way possibility with a context that allows other components to open the widget
 
-## Expanding the ESLint configuration
+# Known Issues
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- [x] if the widget is opened and closed and reopened the agent does not give first message again
+- if the agent speaks it includes \[worried\] at the beginning indicating tone, although this could possibility be argued as an accessibility feature
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+# TODO
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- [x] improve status to show connecting instead of offline at the start
+- [x] request mic but fall back to text if mic access is not allowed
+- [x] have a mute mic button
+- [x] if in voice/call mode have a button to end call
+- [x] add error handling
+- [x] close the connection when the visibility is toggled
+- [x] add a visible text regarding the use of ElevenLabs
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- [ ] improve accessibility even more
