@@ -27,11 +27,12 @@ export default function AIChatWidget(props: Props) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [micMuted, setMicMuted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | undefined>(undefined);
 
   const conversation = useConversation({
     micMuted: micMuted,
     onError: (error) => {
-      console.error(error);
+      setError(error);
       setIsLoading(false);
     },
     onConnect: () => setIsLoading(false),
@@ -80,6 +81,11 @@ export default function AIChatWidget(props: Props) {
         <div className="fixed right-4 bottom-20 max-w-100 w-full min-h-150 max-h-[50vh] bg-gray-800 p-4 rounded-xl flex flex-col shadow-2xl">
           <StatusIndicator status={conversation.status} loading={isLoading} />
           <h2 className="text-2xl font-bold mb-2">Aheeva AI Chat</h2>
+          {error && (
+            <div className="text-red-500 text-center">
+              <p>{error}</p>
+            </div>
+          )}
           <MessageContainer messages={messages} />
           {textOnly && (
             <ChatBox
