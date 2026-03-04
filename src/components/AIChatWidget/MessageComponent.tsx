@@ -1,5 +1,5 @@
 import Markdown from "react-markdown";
-import type { Message } from "../models/message";
+import type { Message } from "../../models/message";
 
 export function MessageComponent({ message }: { message: Message }) {
   return (

@@ -1,4 +1,4 @@
-import AIChatWidget from "./components/AIChatWidget";
+import AIChatWidget from "./components/AIChatWidget/AIChatWidget";
 
 function App() {
   return (
