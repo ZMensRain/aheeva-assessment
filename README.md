@@ -22,6 +22,7 @@
 
 - [x] if the widget is opened and closed and reopened the agent does not give first message again
 - if the agent speaks it includes \[worried\] at the beginning indicating tone, although this could possibility be argued as an accessibility feature
+- if the account does not have enough credits it disconnects without an error being thrown by the sdk
 
 # TODO
 
