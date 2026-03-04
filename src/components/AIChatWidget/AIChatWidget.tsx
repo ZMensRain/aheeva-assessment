@@ -24,6 +24,7 @@ type AIChatState = {
   messages: Message[];
   micMuted: boolean;
   isLoading: boolean;
+  isAgentTyping: boolean;
   error: string | undefined;
 };
 
@@ -38,6 +39,7 @@ export default function AIChatWidget(props: Props) {
     messages: [],
     micMuted: false,
     isLoading: true,
+    isAgentTyping: true,
     error: undefined,
   });
 
@@ -51,6 +53,7 @@ export default function AIChatWidget(props: Props) {
     onMessage: (message) => {
       setState((prev) => ({
         ...prev,
+        isAgentTyping: false,
         messages: [
           ...prev.messages,
           { content: message.message, role: message.role },
@@ -96,6 +99,7 @@ export default function AIChatWidget(props: Props) {
     conversation.sendUserMessage(message);
     setState((prev) => ({
       ...prev,
+      isAgentTyping: true,
       messages: [...prev.messages, { content: message, role: "user" }],
     }));
   }
@@ -122,7 +126,10 @@ export default function AIChatWidget(props: Props) {
               <p>{state.error}</p>
             </div>
           )}
-          <MessageContainer messages={state.messages} />
+          <MessageContainer
+            messages={state.messages}
+            agentTyping={state.textOnly && state.isAgentTyping}
+          />
           {state.textOnly && <ChatBox onMessageSend={handleMessageSend} />}
           {!state.textOnly && (
             <CallButtons
