@@ -25,12 +25,16 @@ export default function AIChatWidget(props: Props) {
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [micMuted, setMicMuted] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const conversation = useConversation({
     micMuted: micMuted,
     onError: (error) => {
       console.error(error);
+      setIsLoading(false);
     },
+    onConnect: () => setIsLoading(false),
+    onDisconnect: () => setIsLoading(false),
 
     onMessage: (message) => {
       setMessages((prev) => {
@@ -67,7 +71,7 @@ export default function AIChatWidget(props: Props) {
       </button>
       {dialogOpen && (
         <div className="fixed right-4 bottom-20 max-w-100 w-full min-h-150 max-h-[50vh] bg-gray-800 p-4 rounded-xl flex flex-col shadow-2xl">
-          <StatusIndicator status={conversation.status} />
+          <StatusIndicator status={conversation.status} loading={isLoading} />
           <h2 className="text-2xl font-bold mb-2">Aheeva AI Chat</h2>
           <MessageContainer messages={messages} />
           {textOnly && (
@@ -107,15 +111,25 @@ export default function AIChatWidget(props: Props) {
   );
 }
 
-function StatusIndicator({ status }: { status: Status }) {
+function StatusIndicator({
+  status,
+  loading,
+}: {
+  status: Status;
+  loading: boolean;
+}) {
   return (
     <span className="flex items-center gap-1">
       <span
         className={`rounded-full p-2 text-xs font-bold ${
-          status == "connected" ? "bg-green-500" : "bg-red-500"
+          loading
+            ? "bg-amber-500"
+            : status == "connected"
+            ? "bg-green-500"
+            : "bg-red-500"
         }`}
       ></span>
-      {status == "connected" ? "Online" : "Offline"}
+      {loading ? "Loading..." : status == "connected" ? "Online" : "Offline"}
     </span>
   );
 }
