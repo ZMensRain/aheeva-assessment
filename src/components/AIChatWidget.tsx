@@ -2,37 +2,52 @@ type Props = {
   open?: boolean;
 };
 
-import { BotMessageSquare } from "lucide-react";
+import { BotMessageSquare, MicIcon, MicOffIcon } from "lucide-react";
 import { useState } from "react";
 import ChatBox from "./ChatBox";
 import MessageContainer from "./MessageContainer";
 import type { Message } from "../models/message";
 import { useConversation, type Status } from "@elevenlabs/react";
 
+async function isTextOnly(): Promise<boolean> {
+  try {
+    await navigator.mediaDevices.getUserMedia({ audio: true });
+    return false;
+  } catch (error) {
+    console.log("Error accessing microphone:", error);
+    return true;
+  }
+}
+
 export default function AIChatWidget(props: Props) {
   const [dialogOpen, setDialogOpen] = useState(props.open ?? false);
+  const [textOnly, setTextOnly] = useState(false);
 
   const [messages, setMessages] = useState<Message[]>([]);
+  const [micMuted, setMicMuted] = useState(false);
 
   const conversation = useConversation({
+    micMuted: micMuted,
     onError: (error) => {
       console.error(error);
     },
 
     onMessage: (message) => {
-      setMessages((prev) => [
-        ...prev,
-        { content: message.message, role: "assistant" },
-      ]);
+      setMessages((prev) => {
+        console.log(message);
+
+        return [...prev, { content: message.message, role: message.role }];
+      });
       console.log(message);
     },
   });
 
-  function handleClick() {
+  async function handleClick() {
+    const textOnly = await isTextOnly();
+    setTextOnly(textOnly);
     conversation.startSession({
       agentId: "agent_6201kjsythxdedabv86f4td7ej9p",
-      textOnly: true,
-
+      textOnly: textOnly,
       connectionType: "websocket",
     });
 
@@ -55,15 +70,37 @@ export default function AIChatWidget(props: Props) {
           <StatusIndicator status={conversation.status} />
           <h2 className="text-2xl font-bold mb-2">Aheeva AI Chat</h2>
           <MessageContainer messages={messages} />
-          <ChatBox
-            onMessageSend={(message) => {
-              conversation.sendUserMessage(message);
-              setMessages((prev) => [
-                ...prev,
-                { content: message, role: "user" },
-              ]);
-            }}
-          />
+          {textOnly && (
+            <ChatBox
+              onMessageSend={(message) => {
+                conversation.sendUserMessage(message);
+                setMessages((prev) => [
+                  ...prev,
+                  { content: message, role: "user" },
+                ]);
+              }}
+            />
+          )}
+          {!textOnly && (
+            <button
+              className={`${
+                conversation.micMuted
+                  ? "bg-accent hover:bg-amber-600"
+                  : "bg-red-500 hover:bg-red-600"
+              } rounded-2xl flex flex-row justify-center items-center p-2  gap-2`}
+              onClick={() => setMicMuted((prev) => !prev)}
+            >
+              {conversation.micMuted ? (
+                <>
+                  <MicOffIcon /> Unmute
+                </>
+              ) : (
+                <>
+                  <MicIcon /> Mute
+                </>
+              )}
+            </button>
+          )}
         </div>
       )}
     </>
