@@ -2,12 +2,13 @@ type Props = {
   open?: boolean;
 };
 
-import { BotMessageSquare, MicIcon, MicOffIcon } from "lucide-react";
+import { BotMessageSquare } from "lucide-react";
 import { useState } from "react";
 import ChatBox from "./ChatBox";
 import MessageContainer from "./MessageContainer";
 import type { Message } from "../models/message";
 import { useConversation, type Status } from "@elevenlabs/react";
+import CallButtons from "./CallButtons";
 
 async function isTextOnly(): Promise<boolean> {
   try {
@@ -46,7 +47,8 @@ export default function AIChatWidget(props: Props) {
     },
   });
 
-  async function handleClick() {
+  async function handleStartConversation() {
+    setMessages([]);
     const textOnly = await isTextOnly();
     setTextOnly(textOnly);
     conversation.startSession({
@@ -54,8 +56,11 @@ export default function AIChatWidget(props: Props) {
       textOnly: textOnly,
       connectionType: "websocket",
     });
+  }
 
+  async function handleClick() {
     setDialogOpen(!dialogOpen);
+    await handleStartConversation();
   }
 
   return (
@@ -86,24 +91,15 @@ export default function AIChatWidget(props: Props) {
             />
           )}
           {!textOnly && (
-            <button
-              className={`${
-                conversation.micMuted
-                  ? "bg-accent hover:bg-amber-600"
-                  : "bg-red-500 hover:bg-red-600"
-              } rounded-2xl flex flex-row justify-center items-center p-2  gap-2`}
-              onClick={() => setMicMuted((prev) => !prev)}
-            >
-              {conversation.micMuted ? (
-                <>
-                  <MicOffIcon /> Unmute
-                </>
-              ) : (
-                <>
-                  <MicIcon /> Mute
-                </>
-              )}
-            </button>
+            <CallButtons
+              muted={conversation.micMuted ?? false}
+              onMuteToggle={() => setMicMuted((prev) => !prev)}
+              onCallButton={(isStartCall) => {
+                if (isStartCall) handleStartConversation();
+                else conversation.endSession();
+              }}
+              isStartCall={conversation.status == "disconnected"}
+            />
           )}
         </div>
       )}
