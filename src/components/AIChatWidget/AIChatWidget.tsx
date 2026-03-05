@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { forwardRef, useCallback, useImperativeHandle, useState } from "react";
 import WidgetChatBox from "./WidgetChatBox";
 import WidgetMessageContainer from "./WidgetMessageContainer";
 import type { Message } from "../../models/message";
@@ -10,8 +10,9 @@ import WidgetToggle from "./WidgetToggle";
 import WidgetPopup from "./WidgetPopup";
 import { isTextOnly } from "../../utils/IsTextOnly";
 
+type mode = "call" | "message";
 type AIChatState = {
-  mode?: "call" | "message";
+  mode?: mode;
   messages: Message[];
   micMuted: boolean;
   isLoading: boolean;
@@ -19,7 +20,12 @@ type AIChatState = {
   error: string | undefined;
 };
 
-export default function AIChatWidget() {
+export type AIChatHandles = {
+  open: (mode: mode) => void;
+  close: () => void;
+};
+
+export const AIChatWidget = forwardRef<AIChatHandles, object>((_props, ref) => {
   const [state, setState] = useState<AIChatState>({
     mode: undefined,
     messages: [],
@@ -50,23 +56,26 @@ export default function AIChatWidget() {
     },
   });
 
-  async function handleStartConversation(textOnly?: boolean) {
-    setState((prev) => ({
-      ...prev,
-      messages: [],
-      error: undefined,
-      isLoading: true,
-    }));
+  const handleStartConversation = useCallback(
+    async (textOnly?: boolean) => {
+      setState((prev) => ({
+        ...prev,
+        messages: [],
+        error: undefined,
+        isLoading: true,
+      }));
 
-    if (!textOnly) textOnly = await isTextOnly();
-    if (textOnly) setState((prev) => ({ ...prev, mode: "message" }));
+      if (!textOnly) textOnly = await isTextOnly();
+      if (textOnly) setState((prev) => ({ ...prev, mode: "message" }));
 
-    conversation.startSession({
-      agentId: "agent_6201kjsythxdedabv86f4td7ej9p",
-      connectionType: "websocket",
-      textOnly: textOnly,
-    });
-  }
+      conversation.startSession({
+        agentId: "agent_6201kjsythxdedabv86f4td7ej9p",
+        connectionType: "websocket",
+        textOnly: textOnly,
+      });
+    },
+    [conversation]
+  );
 
   function handleToggleMute() {
     setState((prev) => ({ ...prev, micMuted: !prev.micMuted }));
@@ -81,20 +90,33 @@ export default function AIChatWidget() {
     }));
   }
 
-  function handleModeChange(mode: "call" | "message") {
-    setState((prev) => {
-      // prevents prompting for microphone access when not needed
-      if (mode === "message") handleStartConversation(true);
-      else conversation.endSession().then(() => handleStartConversation(false));
+  const handleModeChange = useCallback(
+    (mode: mode) => {
+      setState((prev) => {
+        // prevents prompting for microphone access when not needed
+        if (mode === "message") handleStartConversation(true);
+        else
+          conversation.endSession().then(() => handleStartConversation(false));
 
-      return { ...prev, mode: mode };
-    });
-  }
+        return { ...prev, mode: mode };
+      });
+    },
+    [conversation, handleStartConversation]
+  );
 
-  function handleClose() {
+  const handleClose = useCallback(() => {
     setState((prev) => ({ ...prev, mode: undefined }));
     conversation.endSession();
-  }
+  }, [conversation]);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      open: (mode: mode) => handleModeChange(mode),
+      close: () => handleClose(),
+    }),
+    [handleClose, handleModeChange]
+  );
 
   return (
     <>
@@ -129,4 +151,4 @@ export default function AIChatWidget() {
       </WidgetPopup>
     </>
   );
-}
+});

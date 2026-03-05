@@ -1,1 +1,1 @@
-export { default as AIChatWidget } from "./AIChatWidget";
+export { AIChatWidget, type AIChatHandles } from "./AIChatWidget";
