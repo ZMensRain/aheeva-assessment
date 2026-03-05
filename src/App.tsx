@@ -1,9 +1,12 @@
 import AIChatWidget from "./components/AIChatWidget/AIChatWidget";
+import ThemeToggle from "./components/ThemeToggle";
 
 function App() {
   return (
-    <main className="bg-gray-900 text-white h-svh text-center flex flex-col items-center justify-center">
-      <h1 className="text-4xl font-bold">Aheeva AI Widget Assessment</h1>
+    <main className="bg-white dark:bg-stone-900 text-black dark:text-white h-svh text-center flex flex-col items-center justify-center">
+      <ThemeToggle />
+      <h1 className="text-4xl font-bold mb-5">Aheeva AI Widget Assessment</h1>
+
       <AIChatWidget />
     </main>
   );

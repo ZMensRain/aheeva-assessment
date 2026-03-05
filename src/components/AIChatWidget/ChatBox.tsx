@@ -34,7 +34,7 @@ export default function ChatBox({ onMessageSend }: Props) {
         Message
       </label>
 
-      <div className="flex-1 border-2 border-gray-300 rounded-xl flex flex-row items-center pr-2 group-focus-within:border-accent  transition">
+      <div className="flex-1 border-2 border-gray-300 dark:border-stone-700 rounded-xl flex flex-row items-center pr-2 group-focus-within:border-accent  transition">
         <textarea
           id="aheeva-chat-input"
           className=" p-4 border-none outline-0 rounded-xl w-full resize-none"

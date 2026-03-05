@@ -3,3 +3,4 @@
 @theme {
   --color-accent: #f15519;
 }
+@custom-variant dark (&:where(.dark, .dark *));
