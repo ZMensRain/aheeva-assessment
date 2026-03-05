@@ -17,7 +17,7 @@ export default function StatusIndicator({ status, loading }: Props) {
       <span
         className={`rounded-full p-2 text-xs font-bold ${backgroundColor}`}
       ></span>
-      {loading ? "Loading..." : status == "connected" ? "Online" : "Offline"}
+      {loading ? "Loading..." : status == "connected" ? "Listening" : "Offline"}
     </span>
   );
 }

@@ -5,7 +5,7 @@ import type { Message } from "../../models/message";
 import { useConversation } from "@elevenlabs/react";
 import MuteMicButton from "./MuteMicButton";
 import PoweredBy from "./PoweredBy";
-import StatusIndicator from "./statusIndicator";
+import StatusIndicator from "./StatusIndicator";
 import WidgetToggle from "./WidgetToggle";
 
 async function isTextOnly(): Promise<boolean> {
