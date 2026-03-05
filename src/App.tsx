@@ -6,11 +6,11 @@ function App() {
   const ref = useRef<AIChatHandles>(null);
 
   return (
-    <main className="bg-white dark:bg-stone-900 text-black dark:text-white h-svh text-center flex flex-col items-center justify-center">
+    <main className="flex flex-col justify-center items-center text-center h-svh">
       <ThemeToggle />
-      <h1 className="text-4xl font-bold mb-5">Aheeva AI Widget Assessment</h1>
+      <h1 className="mb-5 text-4xl font-bold">Aheeva AI Widget Assessment</h1>
       <button
-        className="bg-accent text-black font-semibold p-2.5 rounded-xl hover:opacity-90 transition cursor-pointer"
+        className="bg-primary text-primary-foreground font-semibold p-2.5 rounded-xl hover:opacity-90 transition cursor-pointer"
         onClick={() => ref.current?.open("message")}
       >
         Talk to us

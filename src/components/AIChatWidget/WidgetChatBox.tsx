@@ -25,26 +25,26 @@ export default function WidgetChatBox({ onMessageSend }: Props) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="group text-left flex flex-col gap-1"
+      className="flex flex-col gap-1 text-left group"
     >
       <label
-        className="text-left mb-1 group-focus-within:text-accent group-focus-within:font-semibold transition"
+        className="mb-1 text-left transition group-focus-within:text-primary group-focus-within:font-semibold"
         htmlFor="aheeva-chat-input"
       >
         Message
       </label>
 
-      <div className="flex-1 border-2 border-gray-300 dark:border-stone-700 rounded-xl flex flex-row items-center pr-2 group-focus-within:border-accent  transition">
+      <div className="flex flex-row flex-1 items-center pr-2 rounded-xl border-2 transition border-border group-focus-within:border-primary">
         <textarea
           id="aheeva-chat-input"
-          className=" p-4 border-none outline-0 rounded-xl w-full resize-none"
+          className="p-4 w-full rounded-xl border-none resize-none outline-0"
           placeholder="What does the company do?"
           name="message"
           required
         ></textarea>
 
         <button
-          className="bg-accent text-white p-2 rounded-xl hover:opacity-90 transition cursor-pointer"
+          className="p-2 rounded-xl transition cursor-pointer bg-primary text-primary-foreground hover:opacity-90"
           type="submit"
           aria-label="Send message"
         >

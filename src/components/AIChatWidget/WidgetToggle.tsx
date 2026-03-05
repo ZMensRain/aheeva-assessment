@@ -8,14 +8,14 @@ type Props = {
 
 export default function WidgetToggle(props: Props) {
   const sharedClass =
-    "border p-2 pt-1.5 pb-1.5 flex-1 flex flex-row gap-2 border-gray-300 dark:border-stone-700 cursor-pointer hover:bg-gray-200 dark:hover:bg-stone-600";
+    "border p-2 pt-1.5 pb-1.5 flex-1 flex flex-row gap-2 border-border cursor-pointer hover:bg-border";
   return (
-    <div className="fixed bottom-4 right-4 flex flex-col gap-2 bg-white dark:bg-stone-800 p-2 rounded-2xl text-black dark:text-white max-w-60 w-full border border-gray-300 dark:border-stone-700 drop-shadow-md">
+    <div className="flex fixed right-4 bottom-4 flex-col gap-2 p-2 w-full rounded-2xl border drop-shadow-md text-card-foreground bg-card border-border max-w-60">
       <span>Speak to an Agent</span>
       <div className="flex flex-row">
         <button
           className={`rounded-bl-xl rounded-tl-xl ${sharedClass} ${
-            props.mode === "call" && "bg-gray-200 dark:bg-stone-700"
+            props.mode === "call" && "bg-muted"
           }`}
           onClick={() =>
             props.mode === "call"
@@ -28,7 +28,7 @@ export default function WidgetToggle(props: Props) {
         </button>
         <button
           className={`rounded-br-xl rounded-tr-xl ${sharedClass} ${
-            props.mode === "message" && "bg-gray-200 dark:bg-stone-700"
+            props.mode === "message" && "bg-border"
           }`}
           onClick={() =>
             props.mode === "message"

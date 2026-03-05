@@ -14,7 +14,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 rounded-xl border border-gray-300 dark:border-gray-700 fixed top-4 left-4 cursor-pointer"
+      className="p-2 rounded-xl border border-border fixed top-4 left-4 cursor-pointer"
       aria-label="Theme Toggle"
     >
       {darkTheme ? <MoonIcon /> : <SunIcon />}
