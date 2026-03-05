@@ -114,7 +114,7 @@ export default function AIChatWidget() {
         onClose={handleClose}
       />
       {state.mode !== undefined && (
-        <div className="fixed right-4 bottom-30 max-w-100 w-full min-h-150 max-h-[50vh] border border-gray-300 dark:border-stone-700 bg-white dark:bg-stone-800  text-black dark:text-white p-4 rounded-xl flex flex-col shadow-md ">
+        <div className="fixed bottom-30 right-1 left-1 h-[calc(90vh-var(--spacing)*30)]  md:left-[unset] md:right-4  md:max-w-100 md:w-full  bg-gray-100 dark:bg-stone-800 text-black dark:text-white p-4 rounded-xl flex flex-col shadow-md border border-gray-300 dark:border-stone-700">
           <StatusIndicator
             status={conversation.status}
             loading={state.isLoading}
