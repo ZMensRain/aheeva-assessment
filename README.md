@@ -9,14 +9,16 @@
 - Transcript view, there is a live-ish transcript view that shows both what you said and what the agent said. It is live-ish as I am not using text streams which would give a proper live experience.
 - not using text streams, I chose not to use text streams because it was easier to implement quickly with the ElevenLabs SDK
 - Accessibility improvements, I focused on having good contrast and well labeled inputs/states that anyone can understand. I chose to improve accessibility because I think accessibility is very important for the web.
+- I went for references over a context for opening the widget from other components to reduce the number of rerenders that was being made
 
 # What I would do with more time
 
 - Improve accessibility even more
 - i18n would be a nice feature seeing as aheeva operates in so many countries
 - text streams to have a better user experience.
-- add a way to switch between the voice and text modes.
-- implement a way possibility with a context that allows other components to open the widget
+- implement css variables for the color types being used like primary, secondary, surface, border that change for dark mode so that the tailwind classes can be cleaned up a little
+- [x] add a way to switch between the voice and text modes.
+- [x] implement a way possibility with a context that allows other components to open the widget, did this via refs and methods on the component
 
 # Known Issues
 
@@ -34,4 +36,4 @@
 - [x] close the connection when the visibility is toggled
 - [x] add a visible text regarding the use of ElevenLabs
 
-- [ ] improve accessibility even more
+- [x] improve accessibility even more
