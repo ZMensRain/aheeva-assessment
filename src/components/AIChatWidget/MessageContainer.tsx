@@ -12,7 +12,9 @@ export default function MessageContainer({ messages, agentTyping }: Props) {
       {messages.map((message) => (
         <MessageComponent message={message} key={message.content} />
       ))}
-      {agentTyping && <div className="text-left text-gray-400">Typing...</div>}
+      {agentTyping && (
+        <div className="text-left text-gray-400 select-none">Typing...</div>
+      )}
     </div>
   );
 }

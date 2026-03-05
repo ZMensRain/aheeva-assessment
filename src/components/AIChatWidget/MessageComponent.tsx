@@ -5,7 +5,7 @@ export function MessageComponent({ message }: { message: Message }) {
   return (
     <div
       className={` p-4 rounded-xl flex flex-col mb-4 text-left ${
-        message.role == "user" ? "ml-10 bg-gray-700 shadow-2xl" : "mr-10"
+        message.role == "user" ? "ml-10 border-gray-300 border" : "mr-10"
       }`}
     >
       <Markdown>{message.content}</Markdown>

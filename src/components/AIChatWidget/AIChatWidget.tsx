@@ -1,14 +1,15 @@
-import { BotMessageSquare } from "lucide-react";
 import { useState } from "react";
 import ChatBox from "./ChatBox";
 import MessageContainer from "./MessageContainer";
 import type { Message } from "../../models/message";
 import { useConversation } from "@elevenlabs/react";
-import CallButtons from "./CallButtons";
+import MuteMicButton from "./MuteMicButton";
 import PoweredBy from "./PoweredBy";
 import StatusIndicator from "./statusIndicator";
+import WidgetToggle from "./WidgetToggle";
 
 async function isTextOnly(): Promise<boolean> {
+  console.log("checking if text only");
   try {
     await navigator.mediaDevices.getUserMedia({ audio: true });
     return false;
@@ -19,8 +20,7 @@ async function isTextOnly(): Promise<boolean> {
 }
 
 type AIChatState = {
-  dialogOpen: boolean;
-  textOnly: boolean;
+  mode?: "call" | "message";
   messages: Message[];
   micMuted: boolean;
   isLoading: boolean;
@@ -28,20 +28,17 @@ type AIChatState = {
   error: string | undefined;
 };
 
-type Props = {
-  open?: boolean;
-};
-
-export default function AIChatWidget(props: Props) {
+export default function AIChatWidget() {
   const [state, setState] = useState<AIChatState>({
-    dialogOpen: props.open ?? false,
-    textOnly: false,
+    mode: undefined,
     messages: [],
     micMuted: false,
     isLoading: true,
     isAgentTyping: true,
     error: undefined,
   });
+
+  const textOnly = state.mode !== "call";
 
   const conversation = useConversation({
     micMuted: state.micMuted,
@@ -62,7 +59,7 @@ export default function AIChatWidget(props: Props) {
     },
   });
 
-  async function handleStartConversation() {
+  async function handleStartConversation(textOnly?: boolean) {
     setState((prev) => ({
       ...prev,
       messages: [],
@@ -70,29 +67,19 @@ export default function AIChatWidget(props: Props) {
       isLoading: true,
     }));
 
-    const textOnly = await isTextOnly();
+    if (!textOnly) textOnly = await isTextOnly();
+
     setState((prev) => ({ ...prev, textOnly: textOnly }));
 
     conversation.startSession({
       agentId: "agent_6201kjsythxdedabv86f4td7ej9p",
-      textOnly: textOnly,
       connectionType: "websocket",
+      textOnly: textOnly,
     });
-  }
-
-  async function handleToggleOpen() {
-    setState((prev) => ({ ...prev, dialogOpen: !prev.dialogOpen }));
-    if (!state.dialogOpen) await handleStartConversation();
-    else conversation.endSession();
   }
 
   function handleToggleMute() {
     setState((prev) => ({ ...prev, micMuted: !prev.micMuted }));
-  }
-
-  function handleCallButton(isStartCall?: boolean) {
-    if (isStartCall) handleStartConversation();
-    else conversation.endSession();
   }
 
   function handleMessageSend(message: string) {
@@ -104,18 +91,30 @@ export default function AIChatWidget(props: Props) {
     }));
   }
 
+  function handleModeChange(mode: "call" | "message") {
+    setState((prev) => {
+      // prevents prompting for microphone access when not needed
+      if (mode === "message") handleStartConversation(true);
+      else conversation.endSession().then(() => handleStartConversation(false));
+
+      return { ...prev, mode: mode };
+    });
+  }
+
+  function handleClose() {
+    setState((prev) => ({ ...prev, mode: undefined }));
+    conversation.endSession();
+  }
+
   return (
     <>
-      <button
-        className="rounded-xl bg-accent p-4 fixed bottom-4 right-4 cursor-pointer hover:scale-110 transition"
-        onClick={handleToggleOpen}
-        aria-label="Toggle AI chat"
-        aria-expanded={state.dialogOpen}
-      >
-        <BotMessageSquare scale={3} />
-      </button>
-      {state.dialogOpen && (
-        <div className="fixed right-4 bottom-20 max-w-100 w-full min-h-150 max-h-[50vh] bg-gray-800 p-4 rounded-xl flex flex-col shadow-2xl">
+      <WidgetToggle
+        mode={state.mode}
+        onModeChange={handleModeChange}
+        onClose={handleClose}
+      />
+      {state.mode !== undefined && (
+        <div className="fixed right-4 bottom-30 max-w-100 w-full min-h-150 max-h-[50vh] bg-white text-black p-4 rounded-xl flex flex-col shadow-2xl">
           <StatusIndicator
             status={conversation.status}
             loading={state.isLoading}
@@ -128,15 +127,13 @@ export default function AIChatWidget(props: Props) {
           )}
           <MessageContainer
             messages={state.messages}
-            agentTyping={state.textOnly && state.isAgentTyping}
+            agentTyping={textOnly && state.isAgentTyping}
           />
-          {state.textOnly && <ChatBox onMessageSend={handleMessageSend} />}
-          {!state.textOnly && (
-            <CallButtons
+          <ChatBox onMessageSend={handleMessageSend} />
+          {!textOnly && (
+            <MuteMicButton
               muted={conversation.micMuted ?? false}
               onMuteToggle={handleToggleMute}
-              onCallButton={handleCallButton}
-              isStartCall={conversation.status == "disconnected"}
             />
           )}
           <PoweredBy />
