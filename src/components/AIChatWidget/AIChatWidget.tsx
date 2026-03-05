@@ -1,23 +1,14 @@
 import { useState } from "react";
-import ChatBox from "./ChatBox";
-import MessageContainer from "./MessageContainer";
+import WidgetChatBox from "./WidgetChatBox";
+import WidgetMessageContainer from "./WidgetMessageContainer";
 import type { Message } from "../../models/message";
 import { useConversation } from "@elevenlabs/react";
-import MuteMicButton from "./MuteMicButton";
-import PoweredBy from "./PoweredBy";
-import StatusIndicator from "./StatusIndicator";
+import WidgetMicToggle from "./WidgetMicToggle";
+import WidgetPoweredBy from "./WidgetPoweredBy";
+import WidgetStatusIndicator from "./WidgetStatus";
 import WidgetToggle from "./WidgetToggle";
-
-async function isTextOnly(): Promise<boolean> {
-  console.log("checking if text only");
-  try {
-    await navigator.mediaDevices.getUserMedia({ audio: true });
-    return false;
-  } catch (error) {
-    console.log("Error accessing microphone:", error);
-    return true;
-  }
-}
+import WidgetPopup from "./WidgetPopup";
+import { isTextOnly } from "../../utils/IsTextOnly";
 
 type AIChatState = {
   mode?: "call" | "message";
@@ -112,32 +103,30 @@ export default function AIChatWidget() {
         onModeChange={handleModeChange}
         onClose={handleClose}
       />
-      {state.mode !== undefined && (
-        <div className="fixed bottom-30 right-1 left-1 h-[calc(90vh-var(--spacing)*30)]  md:left-[unset] md:right-4  md:max-w-100 md:w-full  bg-gray-100 dark:bg-stone-800 text-black dark:text-white p-4 rounded-xl flex flex-col shadow-md border border-gray-300 dark:border-stone-700">
-          <StatusIndicator
-            status={conversation.status}
-            loading={state.isLoading}
+      <WidgetPopup mode={state.mode}>
+        <WidgetStatusIndicator
+          status={conversation.status}
+          loading={state.isLoading}
+        />
+        <h2 className="text-2xl font-bold mb-2">Aheeva AI Chat</h2>
+        {state.error && (
+          <div className="text-red-500 text-center">
+            <p>{state.error}</p>
+          </div>
+        )}
+        <WidgetMessageContainer
+          messages={state.messages}
+          agentTyping={textOnly && state.isAgentTyping}
+        />
+        <WidgetChatBox onMessageSend={handleMessageSend} />
+        {!textOnly && (
+          <WidgetMicToggle
+            muted={conversation.micMuted ?? false}
+            onToggle={handleToggleMute}
           />
-          <h2 className="text-2xl font-bold mb-2">Aheeva AI Chat</h2>
-          {state.error && (
-            <div className="text-red-500 text-center">
-              <p>{state.error}</p>
-            </div>
-          )}
-          <MessageContainer
-            messages={state.messages}
-            agentTyping={textOnly && state.isAgentTyping}
-          />
-          <ChatBox onMessageSend={handleMessageSend} />
-          {!textOnly && (
-            <MuteMicButton
-              muted={conversation.micMuted ?? false}
-              onMuteToggle={handleToggleMute}
-            />
-          )}
-          <PoweredBy />
-        </div>
-      )}
+        )}
+        <WidgetPoweredBy />
+      </WidgetPopup>
     </>
   );
 }

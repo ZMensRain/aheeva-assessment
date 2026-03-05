@@ -5,7 +5,7 @@ type Props = {
   onMessageSend?: (message: string) => void;
 };
 
-export default function ChatBox({ onMessageSend }: Props) {
+export default function WidgetChatBox({ onMessageSend }: Props) {
   // input reference
 
   const handleSubmit: React.SubmitEventHandler<HTMLFormElement> = (e) => {

@@ -5,7 +5,7 @@ type Props = {
   loading: boolean;
 };
 
-export default function StatusIndicator({ status, loading }: Props) {
+export default function WidgetStatusIndicator({ status, loading }: Props) {
   const backgroundColor = loading
     ? "bg-amber-500"
     : status == "connected"

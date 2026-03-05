@@ -1,7 +1,7 @@
 import Markdown from "react-markdown";
 import type { Message } from "../../models/message";
 
-export function MessageComponent({ message }: { message: Message }) {
+export function WidgetMessage({ message }: { message: Message }) {
   return (
     <div
       className={` p-4 rounded-xl flex flex-col mb-4 text-left ${

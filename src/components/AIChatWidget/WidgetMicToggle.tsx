@@ -2,10 +2,13 @@ import { MicIcon, MicOffIcon } from "lucide-react";
 
 type Props = {
   muted: boolean;
-  onMuteToggle: () => void;
+  onToggle: () => void;
 };
 
-export default function MuteMicButton({ muted, onMuteToggle }: Props) {
+export default function WidgetMicToggle({
+  muted,
+  onToggle: onMuteToggle,
+}: Props) {
   return (
     <div className="absolute top-4 right-4">
       <button

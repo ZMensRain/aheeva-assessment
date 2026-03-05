@@ -1,4 +1,4 @@
-import AIChatWidget from "./components/AIChatWidget/AIChatWidget";
+import { AIChatWidget } from "./components/AIChatWidget/";
 import ThemeToggle from "./components/ThemeToggle";
 
 function App() {
