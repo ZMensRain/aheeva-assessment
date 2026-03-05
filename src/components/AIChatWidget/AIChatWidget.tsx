@@ -68,8 +68,7 @@ export default function AIChatWidget() {
     }));
 
     if (!textOnly) textOnly = await isTextOnly();
-
-    setState((prev) => ({ ...prev, textOnly: textOnly }));
+    if (textOnly) setState((prev) => ({ ...prev, mode: "message" }));
 
     conversation.startSession({
       agentId: "agent_6201kjsythxdedabv86f4td7ej9p",
